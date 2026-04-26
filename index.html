@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Enigma del Tiempo Geológico — 4º ESO</title>
+<style>
+:root{
+  /* Paleta cósmica nocturna */
+  --fondo-1:#0A1228;
+  --fondo-2:#0F1A33;
+  --fondo-3:#16243F;
+  --fondo-4:#1F304F;
+  --borde-oro:rgba(212,178,98,0.35);
+  --borde-oro-fuerte:rgba(212,178,98,0.65);
+  --borde-tenue:rgba(140,170,210,0.15);
+
+  --texto:#EDE2C5;
+  --texto-claro:#FFF5DC;
+  --texto-apagado:#A8B4C8;
+  --texto-tenue:#6E7C95;
+
+  --oro:#D4B262;
+  --oro-claro:#E8C97A;
+  --oro-tenue:#8A7240;
+  --oro-sutil:rgba(212,178,98,0.12);
+
+  --azul:#5A8AC4;
+  --azul-claro:#7BA8DD;
+
+  --error:#D67676;
+  --error-fondo:rgba(214,118,118,0.15);
+  --correcto:#8DBA70;
+  --correcto-fondo:rgba(141,186,112,0.15);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Cormorant Garamond','Georgia','Times New Roman',serif;
+  background:var(--fondo-1);
+  background-image:
+    radial-gradient(2px 2px at 20% 30%,rgba(212,178,98,0.4),transparent),
+    radial-gradient(1px 1px at 60% 70%,rgba(212,178,98,0.3),transparent),
+    radial-gradient(1.5px 1.5px at 80% 20%,rgba(212,178,98,0.4),transparent),
+    radial-gradient(1px 1px at 40% 80%,rgba(255,245,220,0.3),transparent),
+    radial-gradient(2px 2px at 90% 60%,rgba(212,178,98,0.3),transparent),
+    radial-gradient(1px 1px at 10% 90%,rgba(255,245,220,0.4),transparent),
+    radial-gradient(1.5px 1.5px at 70% 40%,rgba(212,178,98,0.3),transparent),
+    radial-gradient(1px 1px at 30% 50%,rgba(255,245,220,0.2),transparent),
+    radial-gradient(2px 2px at 50% 10%,rgba(212,178,98,0.4),transparent),
+    radial-gradient(1px 1px at 85% 85%,rgba(255,245,220,0.3),transparent),
+    radial-gradient(circle at 50% 50%,#0F1A33 0%,#0A1228 70%);
+  min-height:100vh;
+  color:var(--texto);
+  padding:24px 16px;
+  line-height:1.55;
+  font-size:18px;
+}
+
+/* Marca de agua del logo */
+.marca-agua-logo{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:520px;
+  max-width:60vw;
+  opacity:0.18;
+  pointer-events:none;
+  z-index:0;
+  display:none;
+  filter:invert(1) sepia(1) saturate(2) hue-rotate(0deg) brightness(0.9);
+}
+.marca-agua-logo.visible{display:block}
+
+.contenedor{
+  max-width:1200px;
+  margin:0 auto;
+  background:linear-gradient(180deg,var(--fondo-2) 0%,var(--fondo-1) 100%);
+  border:1px solid var(--borde-oro);
+  min-height:calc(100vh - 48px);
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 20px 80px rgba(0,0,0,0.7),inset 0 0 60px rgba(212,178,98,0.04);
+  position:relative;
+  z-index:1;
+}
+
+/* Esquinas decorativas dobladas */
+.contenedor::before,.contenedor::after{
+  content:'';
+  position:absolute;
+  width:50px;
+  height:50px;
+  border:1px solid var(--oro);
+  pointer-events:none;
+  opacity:0.7;
+}
+.contenedor::before{
+  top:12px;left:12px;
+  border-right:none;border-bottom:none;
+}
+.contenedor::after{
+  bottom:12px;right:12px;
+  border-left:none;border-top:none;
+}
+
+/* Cabecera del juego — estilo imagen 3 */
+.cabecera-juego{
+  background:transparent;
+  border-bottom:1px solid var(--borde-oro);
+  padding:24px 44px;
+  display:none;
+  justify-content:space-between;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:18px;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  position:relative;
+}
+.cabecera-juego.visible{display:flex}
+.cabecera-titulo{
+  color:var(--oro);
+  font-size:0.78em;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  font-weight:500;
+  margin-bottom:6px;
+}
+.cabecera-subtitulo{
+  color:var(--texto-claro);
+  font-size:1.4em;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+  margin-bottom:6px;
+  font-weight:500;
+}
+.info-alumno{
+  font-size:0.85em;
+  color:var(--azul-claro);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin-top:2px;
+}
+.cronometro{
+  background:transparent;
+  border:1px solid var(--oro);
+  padding:14px 30px;
+  font-size:1.7em;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  letter-spacing:4px;
+  color:var(--oro-claro);
+  font-style:italic;
+  position:relative;
+  min-width:140px;
+  text-align:center;
+}
+.cronometro::before,.cronometro::after{
+  content:'';
+  position:absolute;
+  width:10px;height:10px;
+  border:1px solid var(--oro);
+}
+.cronometro::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.cronometro::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.cronometro.alerta{
+  color:var(--error);
+  border-color:var(--error);
+  animation:parpadeo 1.2s ease-in-out infinite;
+}
+@keyframes parpadeo{50%{opacity:0.55}}
+
+/* Pantallas */
+.pantalla{display:none;padding:48px 56px;flex:1;position:relative}
+.pantalla.activa{display:block;animation:aparece 0.7s ease}
+@keyframes aparece{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* PANTALLA INICIO */
+#pantalla-inicio{text-align:center;padding:55px 56px}
+.marca-colegio{
+  color:var(--texto-tenue);
+  font-size:0.9em;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  margin-bottom:34px;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+}
+#pantalla-inicio h1{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  color:var(--texto-claro);
+  font-size:3.6em;
+  font-weight:500;
+  margin-bottom:8px;
+  letter-spacing:1px;
+  line-height:1.1;
+  text-shadow:0 0 30px rgba(212,178,98,0.2);
+}
+#pantalla-inicio h1::before,#pantalla-inicio h1::after{
+  content:'';
+  display:inline-block;
+  width:30px;
+  height:1px;
+  background:var(--oro);
+  vertical-align:middle;
+  margin:0 24px;
+  position:relative;
+  top:-8px;
+}
+
+.adorno-rombo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin:30px auto 24px;
+  color:var(--oro);
+}
+.adorno-rombo .linea{width:80px;height:1px;background:var(--oro);opacity:0.7}
+.adorno-rombo .rombo{
+  width:8px;height:8px;
+  background:var(--oro);
+  transform:rotate(45deg);
+}
+
+.nivel-curso{
+  color:var(--texto-tenue);
+  font-size:0.95em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+}
+
+/* Caja de pacto académico — estilo imagen 2 con iconos */
+.pacto-academico{
+  background:linear-gradient(180deg,rgba(22,36,63,0.9),rgba(15,26,51,0.9));
+  border:1px solid var(--borde-oro);
+  padding:28px 36px;
+  margin:38px auto 30px;
+  max-width:780px;
+  position:relative;
+}
+.pacto-academico::before,.pacto-academico::after{
+  content:'';
+  position:absolute;
+  width:24px;
+  height:24px;
+  border:1px solid var(--oro);
+  opacity:0.7;
+}
+.pacto-academico::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.pacto-academico::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.pacto-titulo{
+  color:var(--oro);
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:0.88em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:24px;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+.pacto-titulo::before,.pacto-titulo::after{
+  content:'';
+  flex:0 0 40px;
+  height:1px;
+  background:var(--oro);
+  opacity:0.6;
+}
+.pacto-lista{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:14px;
+}
+.pacto-item{
+  text-align:center;
+  padding:22px 16px;
+  border:1px solid var(--borde-oro);
+  background:rgba(10,18,40,0.6);
+  position:relative;
+}
+.pacto-icono{
+  width:36px;
+  height:36px;
+  margin:0 auto 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pacto-icono svg{
+  width:32px;
+  height:32px;
+  stroke:var(--oro-claro);
+  fill:none;
+  stroke-width:1.4;
+}
+.pacto-item .nota-rango{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.15em;
+  color:var(--texto-claro);
+  font-style:italic;
+  margin-bottom:10px;
+  line-height:1.35;
+}
+.pacto-item .efecto{
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:0.95em;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:500;
+}
+.pacto-item.pos .efecto{color:var(--correcto)}
+.pacto-item.neg .efecto{color:var(--error)}
+.pacto-item.neu .efecto{color:var(--texto-apagado)}
+.pacto-aclaracion{
+  text-align:center;
+  margin-top:22px;
+  font-size:0.95em;
+  color:var(--texto-tenue);
+  font-style:italic;
+  font-family:'Cormorant Garamond',Georgia,serif;
+}
+
+/* Caja instrucciones del juego — estilo imagen 2 */
+.caja-instrucciones{
+  background:rgba(15,26,51,0.7);
+  border:1px solid var(--borde-oro);
+  padding:32px 38px;
+  margin:30px auto;
+  max-width:780px;
+  text-align:left;
+  position:relative;
+}
+.caja-instrucciones::before,.caja-instrucciones::after{
+  content:'';
+  position:absolute;
+  width:20px;height:20px;
+  border:1px solid var(--oro);
+  opacity:0.6;
+}
+.caja-instrucciones::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.caja-instrucciones::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.caja-instrucciones h3{
+  font-size:1em;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  font-weight:500;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin-bottom:22px;
+  color:var(--oro);
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.caja-instrucciones h3 svg{
+  width:22px;height:22px;
+  stroke:var(--oro);fill:none;stroke-width:1.6;
+}
+.caja-instrucciones ol{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+.caja-instrucciones ol li{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(140,170,210,0.08);
+  color:var(--texto-apagado);
+  font-size:1.05em;
+  line-height:1.5;
+}
+.caja-instrucciones ol li:last-child{border-bottom:none}
+.caja-instrucciones ol li .num-circulo{
+  flex:0 0 32px;
+  height:32px;
+  border:1px solid var(--oro);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:0.85em;
+  color:var(--oro-claro);
+  font-weight:500;
+}
+.caja-instrucciones ol li .texto-li{flex:1}
+.caja-instrucciones ol li .icono-li{
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+}
+.caja-instrucciones ol li .icono-li svg{
+  width:100%;
+  height:100%;
+  stroke:var(--oro);
+  fill:none;
+  stroke-width:1.5;
+  opacity:0.7;
+}
+.caja-instrucciones strong{color:var(--texto-claro)}
+
+.formulario-inicio{
+  max-width:780px;
+  margin:36px auto 20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px 26px;
+}
+.formulario-inicio .campo{display:flex;flex-direction:column;gap:8px}
+.formulario-inicio label{
+  text-align:left;
+  font-size:0.85em;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--oro);
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.formulario-inicio label svg{width:16px;height:16px;stroke:var(--oro);fill:none;stroke-width:1.6}
+.formulario-inicio input{
+  padding:16px 22px;
+  font-size:1.1em;
+  background:var(--fondo-1);
+  border:1px solid var(--borde-oro);
+  color:var(--texto-claro);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+  transition:all 0.3s;
+}
+.formulario-inicio input:focus{
+  outline:none;
+  border-color:var(--oro);
+  background:var(--fondo-3);
+  box-shadow:0 0 20px rgba(212,178,98,0.2);
+}
+.formulario-inicio input::placeholder{color:var(--texto-tenue);font-style:italic}
+
+/* Botón principal estilo dorado sólido (imagen 2) */
+.boton-principal{
+  background:linear-gradient(180deg,var(--oro-claro) 0%,var(--oro) 100%);
+  color:var(--fondo-1);
+  border:1px solid var(--oro);
+  padding:20px 70px;
+  font-size:1.05em;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.3s;
+  margin:30px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  grid-column:1/-1;
+  width:fit-content;
+  position:relative;
+  box-shadow:0 0 30px rgba(212,178,98,0.25);
+}
+.boton-principal svg{
+  width:22px;height:22px;
+  stroke:var(--fondo-1);fill:none;stroke-width:2;
+}
+.boton-principal:hover{
+  background:linear-gradient(180deg,var(--oro) 0%,#9F7E48 100%);
+  box-shadow:0 0 40px rgba(212,178,98,0.5);
+  transform:translateY(-1px);
+}
+
+.aviso-error{
+  color:var(--error);
+  font-size:1em;
+  margin-top:10px;
+  min-height:1.2em;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  text-align:center;
+  grid-column:1/-1;
+}
+
+/* Títulos de sala */
+.titulo-sala{
+  text-align:center;
+  margin-bottom:36px;
+  padding-bottom:30px;
+  border-bottom:1px solid var(--borde-oro);
+  position:relative;
+}
+.titulo-sala::after{
+  content:'';
+  position:absolute;
+  bottom:-5px;
+  left:50%;
+  transform:translateX(-50%) rotate(45deg);
+  width:8px;height:8px;
+  background:var(--oro);
+}
+.numero-sala-circulo{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:64px;
+  height:64px;
+  border:1px solid var(--oro);
+  border-radius:50%;
+  margin-bottom:14px;
+  position:relative;
+  background:var(--fondo-2);
+}
+.numero-sala-circulo::before,.numero-sala-circulo::after{
+  content:'';
+  position:absolute;
+  width:80px;height:1px;
+  background:var(--oro);
+  opacity:0.5;
+  top:50%;
+}
+.numero-sala-circulo::before{right:100%;margin-right:14px}
+.numero-sala-circulo::after{left:100%;margin-left:14px}
+.numero-sala-circulo span{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:2em;
+  font-style:italic;
+  color:var(--oro-claro);
+}
+
+.etiqueta-sala{
+  color:var(--texto-tenue);
+  font-size:0.85em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin-bottom:18px;
+}
+.nombre-sala{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:2.8em;
+  color:var(--texto-claro);
+  font-weight:500;
+  margin-bottom:18px;
+  letter-spacing:0.5px;
+  text-shadow:0 0 25px rgba(212,178,98,0.15);
+}
+.instruccion-sala{
+  color:var(--texto-apagado);
+  font-size:1.18em;
+  max-width:820px;
+  margin:0 auto;
+  line-height:1.7;
+}
+.instruccion-sala strong{color:var(--texto-claro)}
+
+.barra-acciones{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin-top:42px;
+  flex-wrap:wrap;
+}
+.boton-comprobar,.boton-pista{
+  background:transparent;
+  border:1px solid;
+  padding:16px 44px;
+  font-size:0.95em;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.boton-comprobar{color:var(--correcto);border-color:var(--correcto)}
+.boton-comprobar:hover{background:var(--correcto);color:var(--fondo-1);box-shadow:0 0 25px rgba(141,186,112,0.3)}
+.boton-pista{color:var(--oro);border-color:var(--oro);display:none}
+.boton-pista.visible{display:inline-block;animation:aparece 0.5s ease}
+.boton-pista:hover:not(:disabled){background:var(--oro);color:var(--fondo-1);box-shadow:0 0 25px rgba(212,178,98,0.4)}
+.boton-pista:disabled{color:var(--texto-tenue);border-color:var(--borde-tenue);cursor:not-allowed}
+
+.mensaje-feedback{
+  text-align:center;
+  padding:18px 26px;
+  margin-top:28px;
+  min-height:36px;
+  transition:all 0.3s;
+  font-size:1.1em;
+  border:1px solid transparent;
+  line-height:1.6;
+}
+.mensaje-feedback.error{background:var(--error-fondo);color:var(--error);border-color:var(--error)}
+.mensaje-feedback.ok{background:var(--correcto-fondo);color:var(--correcto);border-color:var(--correcto)}
+.mensaje-feedback.sin-tilde-aviso{
+  background:rgba(212,178,98,0.12);
+  color:var(--oro-claro);
+  border-color:var(--oro);
+  text-align:left;
+  padding:22px 28px;
+  font-size:1.1em;
+  line-height:1.65;
+  font-family:'Cormorant Garamond',Georgia,serif;
+}
+.mensaje-feedback.pista{
+  background:var(--oro-sutil);
+  color:var(--oro-claro);
+  border-color:var(--oro-tenue);
+  text-align:left;
+  padding:24px 30px;
+  line-height:1.75;
+  font-size:1.18em;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+}
+
+/* ===== SALA I — CERROJO ===== */
+#sala-1 .escena{
+  background:radial-gradient(ellipse at center,var(--fondo-2) 0%,var(--fondo-1) 100%);
+  border:1px solid var(--borde-oro);
+  padding:50px 24px;
+  margin:30px 0;
+  position:relative;
+  box-shadow:inset 0 0 80px rgba(0,0,0,0.6);
+}
+.caja-fuerte{max-width:1080px;margin:0 auto}
+.caja-fuerte-titulo{
+  color:var(--oro);
+  text-align:center;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:1em;
+  letter-spacing:6px;
+  margin-bottom:40px;
+  text-transform:uppercase;
+  position:relative;
+  display:block;
+}
+.caja-fuerte-titulo::before,.caja-fuerte-titulo::after{
+  content:'';
+  display:inline-block;
+  width:60px;height:1px;
+  background:var(--oro);
+  vertical-align:middle;
+  opacity:0.5;
+  margin:0 16px;
+}
+.ruletas{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  max-width:1000px;
+  margin:0 auto;
+}
+.ruleta{
+  background:linear-gradient(180deg,var(--fondo-3) 0%,var(--fondo-2) 100%);
+  border:1px solid var(--borde-oro);
+  overflow:hidden;
+  position:relative;
+}
+/* Esquinas decorativas en cada ruleta */
+.ruleta::before,.ruleta::after{
+  content:'';
+  position:absolute;
+  width:14px;
+  height:14px;
+  border:1px solid var(--oro);
+  opacity:0.7;
+  z-index:2;
+}
+.ruleta::before{top:6px;left:6px;border-right:none;border-bottom:none}
+.ruleta::after{bottom:6px;right:6px;border-left:none;border-top:none}
+
+.ruleta-cabecera{
+  color:var(--oro);
+  padding:14px 8px 8px;
+  text-align:center;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:0.78em;
+  letter-spacing:4px;
+  text-transform:uppercase;
+}
+.ruleta-num{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:2em;
+  font-style:italic;
+  color:var(--oro-claro);
+  letter-spacing:normal;
+  display:block;
+  margin-top:4px;
+}
+.ruleta-divisor{
+  width:60%;
+  height:1px;
+  background:var(--oro);
+  opacity:0.4;
+  margin:8px auto;
+}
+
+.ruleta-icono{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:80px;
+  margin:14px 0 8px;
+}
+.ruleta-icono svg{
+  width:64px;
+  height:64px;
+  stroke:var(--oro);
+  fill:none;
+  stroke-width:1.2;
+  opacity:0.85;
+}
+
+.ruleta-display{
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--texto-claro);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.55em;
+  letter-spacing:1px;
+  padding:0 12px 14px;
+  text-align:center;
+  transition:all 0.25s;
+}
+.ruleta-display.error{color:var(--error);animation:sacude 0.5s}
+.ruleta-display.correcto{color:var(--correcto)}
+@keyframes sacude{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.ruleta-botones{
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  gap:8px;
+  border-top:1px solid var(--borde-tenue);
+}
+.ruleta-botones button{
+  flex:1;
+  background:transparent;
+  color:var(--oro);
+  border:1px solid var(--oro-tenue);
+  padding:11px 4px;
+  font-size:0.78em;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  cursor:pointer;
+  transition:all 0.2s;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.ruleta-botones button:hover{background:var(--oro);color:var(--fondo-1)}
+
+/* ===== SALA II — CONEXIONES (estilo imagen 3) ===== */
+#sala-2 .escena{
+  background:radial-gradient(ellipse at center,var(--fondo-2) 0%,var(--fondo-1) 100%);
+  border:1px solid var(--oro);
+  padding:55px 44px;
+  margin:30px 0;
+  position:relative;
+  box-shadow:inset 0 0 60px rgba(0,0,0,0.5);
+}
+/* Marco dorado interior */
+#sala-2 .escena::before,#sala-2 .escena::after{
+  content:'';
+  position:absolute;
+  width:24px;height:24px;
+  border:1px solid var(--oro);
+  pointer-events:none;
+}
+#sala-2 .escena::before{top:14px;left:14px;border-right:none;border-bottom:none}
+#sala-2 .escena::after{bottom:14px;right:14px;border-left:none;border-top:none}
+
+/* Separador con rombo central encima del panel */
+.separador-rombo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin:0 0 30px;
+  color:var(--oro);
+}
+.separador-rombo .linea{flex:1;max-width:300px;height:1px;background:var(--oro);opacity:0.5}
+.separador-rombo .rombo{
+  width:8px;height:8px;
+  background:var(--oro);
+  transform:rotate(45deg);
+}
+
+.panel-conexiones{
+  display:grid;
+  grid-template-columns:1fr 80px 1fr;
+  gap:28px;
+  align-items:center;
+  position:relative;
+  max-width:920px;
+  margin:0 auto;
+  min-height:380px;
+}
+.columna-conexion{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  justify-content:center;
+}
+.columna-conexion h4{
+  text-align:center;
+  color:var(--oro);
+  font-size:0.9em;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:500;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+}
+.columna-conexion h4::before,.columna-conexion h4::after{
+  content:'';
+  flex:0 0 30px;
+  height:1px;
+  background:var(--oro);
+  opacity:0.5;
+}
+/* Nodo de conexión rediseñado con marca de esquina y contenido en grid */
+.nodo-conexion{
+  background:linear-gradient(180deg,var(--fondo-3) 0%,var(--fondo-2) 100%);
+  border:1px solid var(--oro);
+  padding:18px 22px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  align-items:center;
+  gap:18px;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.3em;
+  color:var(--texto-claro);
+  cursor:pointer;
+  transition:all 0.3s;
+  user-select:none;
+  position:relative;
+  text-align:left;
+}
+/* Esquinas dobladas estilo pergamino antiguo */
+.nodo-conexion::before,.nodo-conexion::after{
+  content:'';
+  position:absolute;
+  width:14px;
+  height:14px;
+  border:1px solid var(--oro);
+  opacity:0.85;
+}
+.nodo-conexion::before{top:5px;left:5px;border-right:none;border-bottom:none}
+.nodo-conexion::after{bottom:5px;right:5px;border-left:none;border-top:none}
+/* Círculo con número romano para posiciones */
+.nodo-pos-num{
+  width:48px;height:48px;
+  border:1px solid var(--oro);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.3em;
+  font-style:italic;
+  color:var(--oro-claro);
+}
+/* Pequeño separador • entre número y texto */
+.nodo-conexion .sep{
+  color:var(--oro);
+  font-size:0.7em;
+  margin:0 -8px;
+}
+/* Icono SVG abstracto para las eras */
+.nodo-icono{
+  width:42px;height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.nodo-icono svg{
+  width:36px;height:36px;
+  stroke:var(--oro);
+  fill:none;
+  stroke-width:1.3;
+  opacity:0.95;
+}
+.nodo-conexion:hover{border-color:var(--oro-claro);background:var(--fondo-3);box-shadow:0 0 18px rgba(212,178,98,0.25)}
+.nodo-conexion.seleccionado{border-color:var(--oro-claro);background:rgba(212,178,98,0.15);box-shadow:0 0 24px rgba(212,178,98,0.4)}
+.nodo-conexion.seleccionado .nodo-pos-num,.nodo-conexion.seleccionado .nodo-icono svg{color:var(--oro-claro);stroke:var(--oro-claro)}
+.nodo-conexion.conectado{border-color:var(--azul);background:rgba(90,138,196,0.12)}
+.nodo-conexion.error-conexion{
+  border-color:var(--error)!important;
+  background:var(--error-fondo)!important;
+  color:var(--error)!important;
+  animation:sacude 0.5s;
+}
+.nodo-conexion.error-conexion .nodo-pos-num{border-color:var(--error);color:var(--error)}
+.nodo-conexion.error-conexion .nodo-icono svg{stroke:var(--error)}
+
+#svg-lineas{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.linea-conexion{stroke:var(--oro);stroke-width:2.5;fill:none;stroke-linecap:round;opacity:0.9;filter:drop-shadow(0 0 4px rgba(212,178,98,0.4))}
+.linea-conexion.error{stroke:var(--error);stroke-dasharray:5,4;opacity:1;filter:none}
+
+.boton-borrar{
+  background:transparent;
+  color:var(--texto-apagado);
+  border:1px solid var(--borde-tenue);
+  padding:14px 32px;
+  cursor:pointer;
+  font-size:0.85em;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin:30px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  transition:all 0.25s;
+}
+.boton-borrar svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6}
+.boton-borrar:hover{border-color:var(--texto-claro);color:var(--texto-claro)}
+
+/* ===== SALA III — PERÍODOS (estilo imagen 1) ===== */
+#sala-3 .escena{
+  background:transparent;
+  border:none;
+  padding:0;
+  margin:30px 0;
+  box-shadow:none;
+}
+/* Banco de períodos — estilo imagen 1, marco dorado con título centrado */
+.banco-tarjetas{
+  background:linear-gradient(180deg,var(--fondo-3) 0%,var(--fondo-2) 100%);
+  border:1px solid var(--oro);
+  padding:32px 24px 24px;
+  min-height:120px;
+  margin-bottom:28px;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:14px;
+  position:relative;
+}
+.banco-tarjetas::before,.banco-tarjetas::after{
+  content:'';
+  position:absolute;
+  width:18px;height:18px;
+  border:1px solid var(--oro);
+  opacity:0.85;
+}
+.banco-tarjetas::before{top:6px;left:6px;border-right:none;border-bottom:none}
+.banco-tarjetas::after{bottom:6px;right:6px;border-left:none;border-top:none}
+.banco-tarjetas-titulo{
+  grid-column:1/-1;
+  text-align:center;
+  color:var(--oro);
+  font-size:0.85em;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+.banco-tarjetas-titulo::before,.banco-tarjetas-titulo::after{
+  content:'';
+  flex:0 0 50px;
+  height:1px;
+  background:var(--oro);
+  opacity:0.5;
+}
+.tarjeta-periodo{
+  background:linear-gradient(180deg,var(--fondo-3) 0%,#0E1830 100%);
+  border:1px solid var(--borde-oro);
+  padding:14px 12px;
+  color:var(--texto-claro);
+  cursor:grab;
+  user-select:none;
+  transition:all 0.25s;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.15em;
+  text-align:center;
+  position:relative;
+}
+.tarjeta-periodo:hover{border-color:var(--oro);background:var(--fondo-3);transform:translateY(-3px);box-shadow:0 5px 18px rgba(212,178,98,0.25)}
+.tarjeta-periodo.arrastrando{opacity:0.4;cursor:grabbing}
+.tarjeta-periodo.seleccionada-tarjeta{border-color:var(--oro-claro);background:rgba(212,178,98,0.18);color:var(--oro-claro);box-shadow:0 0 22px rgba(212,178,98,0.4)}
+.tarjeta-periodo.error-tarjeta{border-color:var(--error);background:var(--error-fondo);color:var(--error);animation:sacude 0.5s}
+.tarjeta-periodo.correcta-tarjeta{border-color:var(--correcto);background:var(--correcto-fondo);color:var(--correcto)}
+
+.columnas-eras{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+/* Cada columna con tinte propio (sin texto extra) */
+.columna-era{
+  border:1px solid var(--oro);
+  padding:0;
+  min-height:340px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+}
+.columna-era::before,.columna-era::after{
+  content:'';
+  position:absolute;
+  width:16px;height:16px;
+  border:1px solid var(--oro);
+  opacity:0.85;
+  z-index:2;
+}
+.columna-era::before{top:6px;left:6px;border-right:none;border-bottom:none}
+.columna-era::after{bottom:6px;right:6px;border-left:none;border-top:none}
+
+/* Tintes diferenciados por era (sutiles, ambientales) */
+.columna-era[data-era="paleozoica"]{
+  background:linear-gradient(180deg,#3A2418 0%,#1F1610 100%);
+}
+.columna-era[data-era="mesozoica"]{
+  background:linear-gradient(180deg,#2C3520 0%,#161D10 100%);
+}
+.columna-era[data-era="cenozoica"]{
+  background:linear-gradient(180deg,#1F2C45 0%,#101828 100%);
+}
+
+.columna-era h3{
+  text-align:center;
+  color:var(--oro-claro);
+  padding:18px 12px 14px;
+  font-size:0.95em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:500;
+  margin-bottom:0;
+  border-bottom:1px solid var(--borde-oro);
+}
+/* Línea decorativa bajo el título de cada era */
+.columna-era h3::after{
+  content:'';
+  display:block;
+  width:50px;
+  height:1px;
+  background:var(--oro);
+  margin:8px auto 0;
+  opacity:0.7;
+}
+/* Zona de drop con dashed dentro de la columna */
+.columna-era-zona{
+  flex:1;
+  margin:18px 14px;
+  border:1px dashed var(--borde-oro);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:16px 12px;
+  position:relative;
+}
+.columna-era-zona::before{
+  content:'Arrastra aquí';
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:var(--texto-tenue);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+  font-size:1em;
+  pointer-events:none;
+  white-space:nowrap;
+  opacity:0.7;
+}
+.columna-era-zona:not(:empty)::before{display:none}
+.columna-era-zona .tarjeta-periodo{margin:0}
+.columna-era.arrastre-sobre .columna-era-zona{
+  background:rgba(212,178,98,0.08);
+  border-color:var(--oro);
+}
+
+/* ===== SALA IV — QUIZ ===== */
+#sala-4 .escena{
+  background:radial-gradient(ellipse at center,var(--fondo-2) 0%,var(--fondo-1) 100%);
+  border:1px solid var(--borde-oro);
+  padding:60px 36px;
+  margin:30px 0;
+  min-height:500px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow:inset 0 0 80px rgba(0,0,0,0.6);
+}
+.quiz-progreso{
+  color:var(--oro);
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:0.95em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  margin-bottom:32px;
+}
+.quiz-panel-pregunta{
+  background:linear-gradient(180deg,var(--fondo-3) 0%,var(--fondo-2) 100%);
+  color:var(--texto-claro);
+  padding:55px 80px;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:3.4em;
+  font-style:italic;
+  text-align:center;
+  min-width:380px;
+  border:1px solid var(--borde-oro);
+  margin-bottom:42px;
+  position:relative;
+  text-shadow:0 0 20px rgba(212,178,98,0.15);
+}
+.quiz-panel-pregunta::before,.quiz-panel-pregunta::after{
+  content:'';
+  position:absolute;
+  width:20px;height:20px;
+  border:1px solid var(--oro);
+}
+.quiz-panel-pregunta::before{top:8px;left:8px;border-right:none;border-bottom:none}
+.quiz-panel-pregunta::after{bottom:8px;right:8px;border-left:none;border-top:none}
+
+.quiz-botones{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+  width:100%;
+  max-width:640px;
+}
+.quiz-boton{
+  background:transparent;
+  color:var(--texto-claro);
+  border:1px solid var(--borde-oro);
+  padding:24px;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:1.05em;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.3s;
+  letter-spacing:5px;
+  text-transform:uppercase;
+}
+.quiz-boton:hover:not(:disabled){border-color:var(--oro);color:var(--oro-claro);background:rgba(212,178,98,0.08);box-shadow:0 0 20px rgba(212,178,98,0.2)}
+.quiz-boton.error-quiz{border-color:var(--error);color:var(--error);background:var(--error-fondo);animation:sacude 0.5s}
+.quiz-boton.correcto-quiz{border-color:var(--correcto);color:var(--correcto);background:var(--correcto-fondo)}
+.quiz-boton:disabled{cursor:not-allowed;opacity:0.55}
+
+.quiz-recordatorio{
+  background:rgba(15,26,51,0.95);
+  border:1px solid var(--borde-oro);
+  border-left:3px solid var(--oro);
+  padding:26px 32px;
+  margin-top:34px;
+  display:none;
+  text-align:left;
+  max-width:680px;
+}
+.quiz-recordatorio.visible{display:block;animation:apareceFugaz 0.5s ease}
+@keyframes apareceFugaz{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.quiz-recordatorio h4{
+  color:var(--oro);
+  font-size:0.92em;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:500;
+  margin-bottom:14px;
+}
+.quiz-recordatorio ul{padding-left:24px;line-height:1.85;color:var(--texto-apagado);font-size:1.08em}
+.quiz-recordatorio strong{color:var(--texto-claro)}
+
+/* ===== SALA V — PERGAMINO ===== */
+#sala-5 .escena{
+  background:radial-gradient(ellipse at center,var(--fondo-2) 0%,var(--fondo-1) 100%);
+  border:1px solid var(--borde-oro);
+  padding:55px 44px;
+  margin:30px 0;
+  position:relative;
+  box-shadow:inset 0 0 60px rgba(0,0,0,0.5);
+}
+.pergamino-titulo{
+  text-align:center;
+  color:var(--oro);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.7em;
+  font-style:italic;
+  margin-bottom:42px;
+  padding-bottom:24px;
+  border-bottom:1px solid var(--borde-oro);
+  position:relative;
+}
+.pergamino-titulo::after{
+  content:'';
+  position:absolute;
+  bottom:-5px;
+  left:50%;
+  transform:translateX(-50%) rotate(45deg);
+  width:8px;height:8px;
+  background:var(--oro);
+}
+.estructura-jerarquica{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  max-width:920px;
+  margin:0 auto;
+}
+.nivel-jerarquia{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+  padding:18px 26px;
+  background:rgba(15,26,51,0.6);
+  border-left:2px solid var(--borde-oro);
+}
+.nivel-etiqueta{
+  color:var(--oro);
+  min-width:120px;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-size:0.88em;
+  letter-spacing:3px;
+  text-transform:uppercase;
+}
+.pergamino-input{
+  background:var(--fondo-1);
+  border:1px solid var(--borde-oro);
+  padding:14px 18px;
+  font-size:1.18em;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  color:var(--texto-claro);
+  min-width:180px;
+  flex:1;
+  max-width:240px;
+  transition:all 0.3s;
+}
+.pergamino-input:focus{outline:none;border-color:var(--oro);background:var(--fondo-3);box-shadow:0 0 15px rgba(212,178,98,0.2)}
+.pergamino-input::placeholder{color:var(--texto-tenue);font-style:italic;font-size:0.95em}
+.pergamino-input.input-con-pista::placeholder{
+  color:var(--oro-claro);
+  font-style:normal;
+  font-family:'Courier New',monospace;
+  font-size:1.1em;
+  letter-spacing:3px;
+  opacity:0.85;
+}
+.pergamino-input.error-input{border-color:var(--error);background:var(--error-fondo);color:var(--error);animation:sacude 0.5s}
+.pergamino-input.correcto-input{border-color:var(--correcto);background:var(--correcto-fondo);color:var(--correcto)}
+.pergamino-input.sin-tilde-input{
+  border-color:var(--oro);
+  background:rgba(212,178,98,0.15);
+  color:var(--oro-claro);
+  box-shadow:0 0 12px rgba(212,178,98,0.25);
+}
+.sub-nivel{margin-left:36px;background:rgba(90,138,196,0.06);border-left-color:var(--azul)}
+.texto-pergamino{color:var(--texto-tenue);font-style:italic;font-size:1.08em;font-family:'Cormorant Garamond',Georgia,serif}
+
+/* ===== PANTALLA FINAL ===== */
+#pantalla-final{text-align:center;padding:60px 50px}
+#pantalla-final h1{
+  color:var(--texto-claro);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:3em;
+  font-weight:500;
+  margin-bottom:14px;
+  letter-spacing:1px;
+  text-shadow:0 0 30px rgba(212,178,98,0.2);
+}
+#pantalla-final .subtitulo{
+  color:var(--oro);
+  font-size:0.95em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin-bottom:30px;
+}
+.nota-final-caja{
+  background:linear-gradient(180deg,var(--fondo-3) 0%,var(--fondo-2) 100%);
+  border:1px solid var(--borde-oro);
+  padding:48px 40px;
+  max-width:600px;
+  margin:36px auto;
+  position:relative;
+}
+.nota-final-caja::before,.nota-final-caja::after{
+  content:'';
+  position:absolute;
+  width:28px;height:28px;
+  border:1px solid var(--oro);
+}
+.nota-final-caja::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.nota-final-caja::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.nota-final-caja .nombre{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.5em;
+  color:var(--texto-claro);
+  margin-bottom:24px;
+  font-style:italic;
+}
+.nota-etiqueta{
+  color:var(--oro);
+  font-size:0.85em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  margin-bottom:10px;
+}
+.nota-final-caja .nota{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:6.5em;
+  color:var(--oro-claro);
+  margin:8px 0;
+  letter-spacing:2px;
+  line-height:1;
+  text-shadow:0 0 40px rgba(212,178,98,0.4);
+}
+.nota-final-caja .nota-sobre{color:var(--texto-apagado);font-size:1.1em;font-style:italic}
+.tiempo-total{
+  margin-top:26px;
+  color:var(--azul-claro);
+  font-family:'Courier New',monospace;
+  font-size:1.2em;
+  letter-spacing:2px;
+}
+
+/* Aviso del impacto en la nota media */
+.impacto-nota{
+  max-width:600px;
+  margin:24px auto;
+  padding:24px 28px;
+  border:1px solid var(--borde-oro);
+  text-align:center;
+  font-size:1.15em;
+  font-family:'Cormorant Garamond',Georgia,serif;
+}
+.impacto-nota.positivo{
+  background:rgba(141,186,112,0.12);
+  border-color:var(--correcto);
+  color:var(--correcto);
+}
+.impacto-nota.neutro{
+  background:rgba(140,170,210,0.08);
+  color:var(--texto-apagado);
+}
+.impacto-nota.negativo{
+  background:rgba(214,118,118,0.12);
+  border-color:var(--error);
+  color:var(--error);
+}
+.impacto-nota .texto-impacto{
+  font-size:1.4em;
+  font-style:italic;
+  margin-top:8px;
+}
+
+.desglose-salas{
+  max-width:760px;
+  margin:36px auto;
+  background:rgba(15,26,51,0.7);
+  border:1px solid var(--borde-oro);
+  padding:34px;
+}
+.desglose-salas h3{
+  color:var(--oro);
+  margin-bottom:22px;
+  text-align:center;
+  font-size:0.95em;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:500;
+}
+.tabla-desglose{width:100%;border-collapse:collapse;font-family:'Helvetica Neue',Arial,sans-serif}
+.tabla-desglose th{
+  color:var(--oro);
+  padding:14px 10px;
+  text-align:center;
+  font-size:0.85em;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:500;
+  border-bottom:1px solid var(--borde-oro);
+}
+.tabla-desglose td{
+  padding:14px 10px;
+  text-align:center;
+  border-bottom:1px solid var(--borde-tenue);
+  color:var(--texto-apagado);
+  font-size:1.08em;
+  font-family:'Cormorant Garamond',Georgia,serif;
+}
+.tabla-desglose tr:last-child td{
+  color:var(--texto-claro);
+  border-top:1px solid var(--oro);
+  border-bottom:none;
+  padding-top:18px;
+}
+.tabla-desglose td:first-child{text-align:left}
+
+.mensaje-profesor{
+  background:rgba(212,178,98,0.1);
+  border:1px solid var(--oro);
+  color:var(--oro-claro);
+  padding:24px 36px;
+  max-width:600px;
+  margin:30px auto;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.25em;
+  font-style:italic;
+  letter-spacing:0.5px;
+}
+
+/* RESPONSIVE */
+@media (max-width:1000px){
+  .banco-tarjetas{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:900px){
+  .ruletas{grid-template-columns:repeat(2,1fr)}
+  .pacto-lista{grid-template-columns:1fr}
+  .formulario-inicio{grid-template-columns:1fr}
+  .banco-tarjetas{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:768px){
+  body{padding:12px 8px;font-size:16px}
+  .pantalla{padding:28px 22px}
+  #pantalla-inicio{padding:42px 22px}
+  .columnas-eras{grid-template-columns:1fr}
+  .quiz-botones{grid-template-columns:1fr}
+  .quiz-panel-pregunta{font-size:2.2em;padding:32px}
+  .panel-conexiones{grid-template-columns:1fr;gap:18px}
+  .ruleta-display{font-size:1.3em}
+  #pantalla-inicio h1{font-size:2.4em}
+  .nombre-sala{font-size:2em}
+  .nota-final-caja .nota{font-size:5em}
+  .marca-agua-logo{width:280px}
+  #pantalla-inicio h1::before,#pantalla-inicio h1::after{width:20px;margin:0 14px}
+  .banco-tarjetas{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<img src="logo.jpg" alt="" class="marca-agua-logo" id="marca-agua-logo">
+
+<div class="contenedor">
+
+  <div class="cabecera-juego" id="cabecera-juego">
+    <div>
+      <div class="cabecera-titulo" id="cabecera-titulo">Sala</div>
+      <div class="cabecera-subtitulo" id="cabecera-subtitulo"></div>
+      <div class="info-alumno" id="info-alumno"></div>
+    </div>
+    <div class="cronometro" id="cronometro">30:00</div>
+  </div>
+
+  <!-- PANTALLA INICIO -->
+  <div class="pantalla activa" id="pantalla-inicio">
+    <div class="marca-colegio">Colegio El Ave María · Madrid</div>
+    <h1>El Enigma del Tiempo Geológico</h1>
+    <div class="adorno-rombo">
+      <span class="linea"></span>
+      <span class="rombo"></span>
+      <span class="linea"></span>
+    </div>
+    <div class="nivel-curso">4º ESO · Biología y Geología</div>
+
+    <div class="pacto-academico">
+      <div class="pacto-titulo">Repercusión de este juego en tu nota media de exámenes</div>
+      <div class="pacto-lista">
+        <div class="pacto-item neg">
+          <div class="pacto-icono">
+            <svg viewBox="0 0 32 32"><rect x="6" y="4" width="20" height="26" rx="1"/><line x1="11" y1="2" x2="21" y2="2"/><line x1="11" y1="2" x2="11" y2="6"/><line x1="21" y1="2" x2="21" y2="6"/><line x1="11" y1="2" x2="21" y2="2" stroke-width="2"/><line x1="10" y1="14" x2="22" y2="14"/><line x1="10" y1="20" x2="22" y2="20"/></svg>
+          </div>
+          <div class="nota-rango">Si sacas menos de 5</div>
+          <div class="efecto">−0,5 puntos</div>
+        </div>
+        <div class="pacto-item neu">
+          <div class="pacto-icono">
+            <svg viewBox="0 0 32 32"><line x1="16" y1="6" x2="16" y2="28"/><line x1="10" y1="28" x2="22" y2="28"/><circle cx="16" cy="6" r="1.5"/><line x1="6" y1="12" x2="26" y2="12"/><path d="M3 22 L9 12 L15 22 Q9 24 3 22 Z"/><path d="M17 22 L23 12 L29 22 Q23 24 17 22 Z"/></svg>
+          </div>
+          <div class="nota-rango">Entre 5 y 7</div>
+          <div class="efecto">Sin variación</div>
+        </div>
+        <div class="pacto-item pos">
+          <div class="pacto-icono">
+            <svg viewBox="0 0 32 32"><path d="M10 4 L22 4 L22 14 Q22 19 16 19 Q10 19 10 14 Z"/><path d="M10 7 L6 7 Q4 7 4 10 Q4 13 8 14"/><path d="M22 7 L26 7 Q28 7 28 10 Q28 13 24 14"/><line x1="13" y1="22" x2="19" y2="22"/><line x1="11" y1="28" x2="21" y2="28"/><line x1="13" y1="22" x2="13" y2="28"/><line x1="19" y1="22" x2="19" y2="28"/><line x1="16" y1="19" x2="16" y2="22"/></svg>
+          </div>
+          <div class="nota-rango">Más de 7</div>
+          <div class="efecto">+0,5 puntos</div>
+        </div>
+      </div>
+      <div class="pacto-aclaracion">El resultado se aplicará sobre tu nota media de exámenes del trimestre.</div>
+    </div>
+
+    <div class="caja-instrucciones">
+      <h3>
+        <svg viewBox="0 0 24 24"><path d="M9 2 L15 2 L15 4 L19 4 L19 22 L5 22 L5 4 L9 4 Z"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Instrucciones
+      </h3>
+      <ol>
+        <li>
+          <span class="num-circulo">1</span>
+          <span class="texto-li">Dispones de <strong>30 minutos</strong> para resolver las cinco salas.</span>
+          <span class="icono-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/><line x1="9" y1="2" x2="15" y2="2"/></svg></span>
+        </li>
+        <li>
+          <span class="num-circulo">2</span>
+          <span class="texto-li">En cada sala, pulsa <strong>Comprobar</strong> cuando creas haber terminado.</span>
+          <span class="icono-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8,12 11,15 16,9"/></svg></span>
+        </li>
+        <li>
+          <span class="num-circulo">3</span>
+          <span class="texto-li">Si te equivocas, podrás corregir. Cada comprobación fallida resta <strong>0,3 puntos</strong>.</span>
+          <span class="icono-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg></span>
+        </li>
+        <li>
+          <span class="num-circulo">4</span>
+          <span class="texto-li">Tras tres intentos aparecerá la opción de pedir <strong>pistas</strong> (también restan 0,3 puntos).</span>
+          <span class="icono-li"><svg viewBox="0 0 24 24"><path d="M9 21 L15 21"/><path d="M10 17 L14 17"/><path d="M12 3 C8 3 5 6 5 10 C5 13 7 15 8 17 L16 17 C17 15 19 13 19 10 C19 6 16 3 12 3 Z"/></svg></span>
+        </li>
+        <li>
+          <span class="num-circulo">5</span>
+          <span class="texto-li">Terminar antes de tiempo otorga una <strong>bonificación</strong>.</span>
+          <span class="icono-li"><svg viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg></span>
+        </li>
+        <li>
+          <span class="num-circulo">6</span>
+          <span class="texto-li">Al finalizar, muestra la pantalla de resultados a la profesora.</span>
+          <span class="icono-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22 C4 16 8 14 12 14 C16 14 20 16 20 22"/></svg></span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="formulario-inicio">
+      <div class="campo">
+        <label for="input-nombre">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22 C4 16 8 14 12 14 C16 14 20 16 20 22"/></svg>
+          Nombre
+        </label>
+        <input type="text" id="input-nombre" placeholder="Escribe tu nombre" autocomplete="given-name">
+      </div>
+      <div class="campo">
+        <label for="input-apellidos">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22 C4 16 8 14 12 14 C16 14 20 16 20 22"/></svg>
+          Apellidos
+        </label>
+        <input type="text" id="input-apellidos" placeholder="Escribe tus apellidos" autocomplete="family-name">
+      </div>
+
+      <button class="boton-principal" id="boton-empezar" onclick="empezarJuego()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="10,8 16,12 10,16" fill="currentColor"/></svg>
+        Comenzar
+      </button>
+      <div class="aviso-error" id="aviso-inicio"></div>
+    </div>
+  </div>
+
+  <!-- SALA I -->
+  <div class="pantalla" id="sala-1">
+    <div class="titulo-sala">
+      <div class="numero-sala-circulo"><span>I</span></div>
+      <div class="etiqueta-sala">Sala primera</div>
+      <div class="nombre-sala">El Cerrojo del Tiempo</div>
+      <div class="instruccion-sala">La caja guarda el orden de los cuatro <strong>eones</strong>. Con los botones de cada cilindro, coloca en cada posición el eón correspondiente, del <strong>más antiguo</strong> (posición I) al <strong>más reciente</strong> (posición IV).</div>
+    </div>
+
+    <div class="escena">
+      <div class="caja-fuerte">
+        <div class="caja-fuerte-titulo">Código de los Eones</div>
+        <div class="ruletas" id="ruletas-container"></div>
+      </div>
+    </div>
+
+    <div class="barra-acciones">
+      <button class="boton-comprobar" onclick="comprobarSala1()">Comprobar</button>
+      <button class="boton-pista" id="pista-sala-1" onclick="pedirPista(1)">Pedir pista</button>
+    </div>
+    <div class="mensaje-feedback" id="feedback-sala-1"></div>
+  </div>
+
+  <!-- SALA II -->
+  <div class="pantalla" id="sala-2">
+    <div class="titulo-sala">
+      <div class="numero-sala-circulo"><span>II</span></div>
+      <div class="etiqueta-sala">Sala segunda</div>
+      <div class="nombre-sala">Las Conexiones del Fanerozoico</div>
+      <div class="instruccion-sala">El eón Fanerozoico se divide en <strong>tres eras</strong>. Selecciona una posición de la izquierda y, a continuación, la era de la derecha que le corresponde en orden cronológico. La línea de conexión se trazará automáticamente.</div>
+    </div>
+
+    <div class="escena">
+      <div class="separador-rombo">
+        <span class="linea"></span>
+        <span class="rombo"></span>
+        <span class="linea"></span>
+      </div>
+      <div class="panel-conexiones" id="panel-conexiones">
+        <div class="columna-conexion">
+          <h4>· Posición ·</h4>
+          <div class="nodo-conexion izquierda" data-posicion="1">
+            <span class="nodo-pos-num">I</span>
+            <span class="sep">·</span>
+            <span>más antigua</span>
+          </div>
+          <div class="nodo-conexion izquierda" data-posicion="2">
+            <span class="nodo-pos-num">II</span>
+            <span class="sep">·</span>
+            <span>intermedia</span>
+          </div>
+          <div class="nodo-conexion izquierda" data-posicion="3">
+            <span class="nodo-pos-num">III</span>
+            <span class="sep">·</span>
+            <span>más reciente</span>
+          </div>
+        </div>
+        <div></div>
+        <div class="columna-conexion" id="columna-eras-conexion"></div>
+        <svg id="svg-lineas"></svg>
+      </div>
+      <button class="boton-borrar" onclick="borrarConexiones()">
+        <svg viewBox="0 0 24 24"><path d="M3 6 L21 6"/><path d="M8 6 L8 4 L16 4 L16 6"/><path d="M5 6 L5 20 Q5 21 6 21 L18 21 Q19 21 19 20 L19 6"/></svg>
+        Borrar conexiones
+      </button>
+    </div>
+
+    <div class="barra-acciones">
+      <button class="boton-comprobar" onclick="comprobarSala2()">Comprobar</button>
+      <button class="boton-pista" id="pista-sala-2" onclick="pedirPista(2)">Pedir pista</button>
+    </div>
+    <div class="mensaje-feedback" id="feedback-sala-2"></div>
+  </div>
+
+  <!-- SALA III -->
+  <div class="pantalla" id="sala-3">
+    <div class="titulo-sala">
+      <div class="numero-sala-circulo"><span>III</span></div>
+      <div class="etiqueta-sala">Sala tercera</div>
+      <div class="nombre-sala">La Mesa de los Períodos</div>
+      <div class="instruccion-sala">Los doce períodos aparecen mezclados en el banco superior. <strong>Arrastra cada uno</strong> a la columna de la era a la que pertenece.</div>
+    </div>
+
+    <div class="escena">
+      <div class="banco-tarjetas" id="banco-tarjetas">
+        <div class="banco-tarjetas-titulo">Banco de períodos</div>
+      </div>
+
+      <div class="columnas-eras" id="columnas-eras">
+        <div class="columna-era" data-era="paleozoica">
+          <h3>Era Paleozoica</h3>
+          <div class="columna-era-zona" data-zona="paleozoica"></div>
+        </div>
+        <div class="columna-era" data-era="mesozoica">
+          <h3>Era Mesozoica</h3>
+          <div class="columna-era-zona" data-zona="mesozoica"></div>
+        </div>
+        <div class="columna-era" data-era="cenozoica">
+          <h3>Era Cenozoica</h3>
+          <div class="columna-era-zona" data-zona="cenozoica"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="barra-acciones">
+      <button class="boton-comprobar" onclick="comprobarSala3()">Comprobar</button>
+      <button class="boton-pista" id="pista-sala-3" onclick="pedirPista(3)">Pedir pista</button>
+    </div>
+    <div class="mensaje-feedback" id="feedback-sala-3"></div>
+  </div>
+
+  <!-- SALA IV -->
+  <div class="pantalla" id="sala-4">
+    <div class="titulo-sala">
+      <div class="numero-sala-circulo"><span>IV</span></div>
+      <div class="etiqueta-sala">Sala cuarta</div>
+      <div class="nombre-sala">Clasificación Relámpago</div>
+      <div class="instruccion-sala">Aparecerá un término. Indica a qué <strong>nivel jerárquico</strong> pertenece pulsando el botón correspondiente. Responderás a <span id="quiz-total-preguntas">10</span> términos consecutivos.</div>
+    </div>
+
+    <div class="escena">
+      <div class="quiz-progreso" id="quiz-progreso">Pregunta 1 de 10</div>
+      <div class="quiz-panel-pregunta" id="quiz-panel-pregunta">—</div>
+      <div class="quiz-botones">
+        <button class="quiz-boton" data-nivel="eón">Eón</button>
+        <button class="quiz-boton" data-nivel="era">Era</button>
+        <button class="quiz-boton" data-nivel="período">Período</button>
+        <button class="quiz-boton" data-nivel="época">Época</button>
+      </div>
+      <div class="quiz-recordatorio" id="quiz-recordatorio">
+        <h4>Recordatorio jerárquico</h4>
+        <ul>
+          <li><strong>Eón</strong>: nivel más amplio — Hadeico, Arcaico, Proterozoico, Fanerozoico</li>
+          <li><strong>Era</strong>: subdivide un eón — Paleozoica, Mesozoica, Cenozoica</li>
+          <li><strong>Período</strong>: subdivide una era — Jurásico, Cretácico, Cámbrico…</li>
+          <li><strong>Época</strong>: subdivide un período — Pleistoceno, Holoceno…</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="barra-acciones">
+      <button class="boton-pista" id="pista-sala-4" onclick="pedirPista(4)">Pedir pista</button>
+    </div>
+    <div class="mensaje-feedback" id="feedback-sala-4"></div>
+  </div>
+
+  <!-- SALA V -->
+  <div class="pantalla" id="sala-5">
+    <div class="titulo-sala">
+      <div class="numero-sala-circulo"><span>V</span></div>
+      <div class="etiqueta-sala">Sala quinta</div>
+      <div class="nombre-sala">El Pergamino Perdido</div>
+      <div class="instruccion-sala">Completa el pergamino escribiendo los <strong>nombres correctos</strong> en los huecos. <strong style="color:var(--oro-claro)">Cuidado con las tildes y las mayúsculas iniciales</strong>: si te equivocas, te avisaremos para que lo corrijas antes de finalizar.</div>
+    </div>
+
+    <div class="escena">
+      <div class="pergamino-titulo">La Escala del Tiempo Geológico</div>
+
+      <div class="estructura-jerarquica">
+        <div class="nivel-jerarquia">
+          <span class="nivel-etiqueta">Eón I</span>
+          <input type="text" class="pergamino-input" data-respuesta="Hádico" data-aceptadas="Hádico,Hadeico,Hadeano" placeholder="el más antiguo">
+          <span class="texto-pergamino">formación de la Tierra</span>
+        </div>
+        <div class="nivel-jerarquia">
+          <span class="nivel-etiqueta">Eón II</span>
+          <input type="text" class="pergamino-input" data-respuesta="Arcaico" data-aceptadas="Arcaico,Arqueano" placeholder="escribe el nombre">
+        </div>
+        <div class="nivel-jerarquia">
+          <span class="nivel-etiqueta">Eón III</span>
+          <input type="text" class="pergamino-input" data-respuesta="Proterozoico" data-aceptadas="Proterozoico,Proterozoica" placeholder="escribe el nombre">
+        </div>
+        <div class="nivel-jerarquia">
+          <span class="nivel-etiqueta">Eón IV</span>
+          <input type="text" class="pergamino-input" data-respuesta="Fanerozoico" data-aceptadas="Fanerozoico,Fanerozoica" placeholder="el actual">
+          <span class="texto-pergamino">dividido en tres eras:</span>
+        </div>
+        <div class="nivel-jerarquia sub-nivel">
+          <span class="nivel-etiqueta">Era I</span>
+          <input type="text" class="pergamino-input" data-respuesta="Paleozoica" data-aceptadas="Paleozoica,Paleozoico" placeholder="antigua">
+        </div>
+        <div class="nivel-jerarquia sub-nivel">
+          <span class="nivel-etiqueta">Era II</span>
+          <input type="text" class="pergamino-input" data-respuesta="Mesozoica" data-aceptadas="Mesozoica,Mesozoico" placeholder="intermedia">
+        </div>
+        <div class="nivel-jerarquia sub-nivel">
+          <span class="nivel-etiqueta">Era III</span>
+          <input type="text" class="pergamino-input" data-respuesta="Cenozoica" data-aceptadas="Cenozoica,Cenozoico" placeholder="reciente">
+          <span class="texto-pergamino">último período:</span>
+          <input type="text" class="pergamino-input" data-respuesta="Cuaternario" data-aceptadas="Cuaternario,Cuaternaria" placeholder="el más reciente">
+        </div>
+      </div>
+    </div>
+
+    <div class="barra-acciones">
+      <button class="boton-comprobar" onclick="comprobarSala5()">Comprobar</button>
+      <button class="boton-pista" id="pista-sala-5" onclick="pedirPista(5)">Pedir pista</button>
+    </div>
+    <div class="mensaje-feedback" id="feedback-sala-5"></div>
+  </div>
+
+  <!-- PANTALLA FINAL -->
+  <div class="pantalla" id="pantalla-final">
+    <div class="subtitulo">Actividad finalizada</div>
+    <h1>Resultados</h1>
+
+    <div class="nota-final-caja">
+      <div class="nombre" id="final-nombre">—</div>
+      <div class="nota-etiqueta">Calificación</div>
+      <div class="nota" id="final-nota">0,00</div>
+      <div class="nota-sobre">sobre 10</div>
+      <div class="tiempo-total" id="final-tiempo">—</div>
+    </div>
+
+    <div class="impacto-nota" id="impacto-nota">
+      <div class="nota-etiqueta">Repercusión de este juego en tu nota media</div>
+      <div class="texto-impacto" id="texto-impacto">—</div>
+    </div>
+
+    <div class="desglose-salas">
+      <h3>Desglose por sala</h3>
+      <table class="tabla-desglose">
+        <thead>
+          <tr>
+            <th>Sala</th>
+            <th>Fallos</th>
+            <th>Pistas</th>
+            <th>Penalización</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-desglose-body"></tbody>
+      </table>
+    </div>
+
+    <div class="mensaje-profesor">
+      Muestra esta pantalla a la profesora antes de cerrar la ventana.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const estado = {
+  nombre:'', apellidos:'',
+  salaActual:0,
+  tiempoInicio:null, tiempoFin:null,
+  limiteSegundos:30*60,
+  intervaloCron:null,
+  salas:{
+    1:{fallos:0,pistas:0,completada:false},
+    2:{fallos:0,pistas:0,completada:false},
+    3:{fallos:0,pistas:0,completada:false},
+    4:{fallos:0,pistas:0,completada:false,preguntaActual:0,preguntas:[]},
+    5:{fallos:0,pistas:0,completada:false}
+  }
+};
+
+const EONES_ORDEN = ['Hadeico','Arcaico','Proterozoico','Fanerozoico'];
+const ERAS_ORDEN = ['Paleozoica','Mesozoica','Cenozoica'];
+const PERIODOS_POR_ERA = {
+  paleozoica:['Cámbrico','Ordovícico','Silúrico','Devónico','Carbonífero','Pérmico'],
+  mesozoica:['Triásico','Jurásico','Cretácico'],
+  cenozoica:['Paleógeno','Neógeno','Cuaternario']
+};
+
+// Iconos SVG decorativos para cada posición de ruleta (ornamento puro)
+const ICONOS_POSICION = [
+  // Posición I — sol radiante (decorativo)
+  '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="10"/><line x1="32" y1="6" x2="32" y2="14"/><line x1="32" y1="50" x2="32" y2="58"/><line x1="6" y1="32" x2="14" y2="32"/><line x1="50" y1="32" x2="58" y2="32"/><line x1="13" y1="13" x2="19" y2="19"/><line x1="45" y1="45" x2="51" y2="51"/><line x1="51" y1="13" x2="45" y2="19"/><line x1="19" y1="45" x2="13" y2="51"/></svg>',
+  // Posición II — espiral
+  '<svg viewBox="0 0 64 64"><path d="M32 32 m-2 0 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0 M32 32 m-7 0 a7 7 0 1 0 7 -7 M32 32 m-13 0 a13 13 0 1 1 13 13 M32 32 m-20 0 a20 20 0 1 0 20 -20"/></svg>',
+  // Posición III — diamante con líneas internas
+  '<svg viewBox="0 0 64 64"><polygon points="32,8 56,32 32,56 8,32"/><line x1="32" y1="8" x2="32" y2="56"/><line x1="8" y1="32" x2="56" y2="32"/><polygon points="32,18 46,32 32,46 18,32"/></svg>',
+  // Posición IV — ojo/iris
+  '<svg viewBox="0 0 64 64"><path d="M6 32 Q 32 12 58 32 Q 32 52 6 32 Z"/><circle cx="32" cy="32" r="9"/><circle cx="32" cy="32" r="3" fill="rgb(212,178,98)"/></svg>'
+];
+
+const TERMINOS_CLASIFICACION = [
+  {termino:'Hadeico',nivel:'eón'},
+  {termino:'Fanerozoico',nivel:'eón'},
+  {termino:'Proterozoico',nivel:'eón'},
+  {termino:'Arcaico',nivel:'eón'},
+  {termino:'Mesozoica',nivel:'era'},
+  {termino:'Paleozoica',nivel:'era'},
+  {termino:'Cenozoica',nivel:'era'},
+  {termino:'Jurásico',nivel:'período'},
+  {termino:'Cámbrico',nivel:'período'},
+  {termino:'Cretácico',nivel:'período'},
+  {termino:'Cuaternario',nivel:'período'},
+  {termino:'Ordovícico',nivel:'período'},
+  {termino:'Triásico',nivel:'período'},
+  {termino:'Pleistoceno',nivel:'época'},
+  {termino:'Holoceno',nivel:'época'}
+];
+
+const PISTAS = {
+  1:[
+    'La Tierra se formó hace 4600 millones de años en el eón más antiguo. Tú vives en el más reciente. Las raíces: "hadeico" (de Hades) evoca la Tierra primitiva; "fanerozoico" significa "vida visible".',
+    'Orden correcto, del más antiguo al más reciente: Hadeico, Arcaico, Proterozoico, Fanerozoico.'
+  ],
+  2:[
+    'Raíces griegas: "paleo-" significa antiguo; "meso-" significa medio; "ceno-" significa reciente. Con eso puedes deducir el orden cronológico.',
+    'Orden correcto: I Paleozoica, II Mesozoica, III Cenozoica.'
+  ],
+  3:[
+    'La Paleozoica es la era con más períodos (seis), mientras que la Mesozoica y la Cenozoica tienen tres cada una. Fíjate en la duración relativa que vimos en el vídeo.',
+    'Revisa si algún período con terminación "-ásico" o "-ácico" está fuera de la Mesozoica, o si el Cuaternario no está en la Cenozoica.'
+  ],
+  4:[
+    'Jerarquía descendente: eón, era, período, época. Las épocas suelen ser subdivisiones muy recientes con terminación "-ceno".',
+    'Los nombres en "-ico/-ica" pueden ser eones, eras o períodos. Los que terminan en "-ceno" son épocas.'
+  ],
+  5:[
+    'Los cuatro eones en orden: Hadeico, Arcaico, Proterozoico, Fanerozoico. Las tres eras del Fanerozoico: Paleozoica, Mesozoica, Cenozoica. El período más reciente: Cuaternario.',
+    'Apóyate en las pistas del pergamino: "el más antiguo" remite al Hadeico; "el actual" al Fanerozoico; "intermedia" a la Mesozoica; "el más reciente" al Cuaternario.'
+  ]
+};
+
+function barajar(arr){
+  const c=[...arr];
+  for(let i=c.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [c[i],c[j]]=[c[j],c[i]];
+  }
+  return c;
+}
+
+function normalizar(s){
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .trim()
+    .replace(/\s+/g,' ');
+}
+
+function mostrarPantalla(id){
+  document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
+  const p=document.getElementById(id);
+  if(p)p.classList.add('activa');
+  const marca=document.getElementById('marca-agua-logo');
+  if(marca){
+    if(id==='pantalla-inicio'||id==='pantalla-final'){
+      marca.classList.add('visible');
+    }else{
+      marca.classList.remove('visible');
+    }
+  }
+  window.scrollTo(0,0);
+}
+
+function actualizarCabecera(){
+  const cab=document.getElementById('cabecera-juego');
+  const romanos=['','I','II','III','IV','V'];
+  const nombres=['','El Cerrojo del Tiempo','Las Conexiones del Fanerozoico','La Mesa de los Períodos','Clasificación Relámpago','El Pergamino Perdido'];
+  if(estado.salaActual>=1 && estado.salaActual<=5){
+    cab.classList.add('visible');
+    document.getElementById('cabecera-titulo').textContent='Sala '+romanos[estado.salaActual]+' de V';
+    document.getElementById('cabecera-subtitulo').textContent=nombres[estado.salaActual];
+    document.getElementById('info-alumno').textContent=estado.nombre+' '+estado.apellidos;
+  }else{
+    cab.classList.remove('visible');
+  }
+}
+
+function mostrarFeedback(sala,texto,tipo){
+  const f=document.getElementById('feedback-sala-'+sala);
+  if(!f)return;
+  f.textContent=texto;
+  f.className='mensaje-feedback '+(tipo||'');
+}
+
+function actualizarBotonPista(sala){
+  const btn=document.getElementById('pista-sala-'+sala);
+  if(!btn)return;
+  const s=estado.salas[sala];
+  // Sala V: pistas ilimitadas, aparece tras 1 fallo
+  if(sala===5){
+    if(s.fallos>=1){
+      btn.classList.add('visible');
+      btn.disabled=false;
+      btn.textContent=s.pistas===0?'Pedir pista (revelar letras)':'Pedir otra pista (revelar más letras)';
+    }
+    return;
+  }
+  // Salas I-IV: máx 2 pistas, tras 3 fallos
+  if(s.fallos>=3 && s.pistas<2){
+    btn.classList.add('visible');
+    btn.disabled=false;
+    btn.textContent=s.pistas===0?'Pedir pista':'Pedir segunda pista';
+  }
+  if(s.pistas>=2){
+    btn.disabled=true;
+    btn.textContent='Sin más pistas';
+  }
+}
+
+function pedirPista(sala){
+  const s=estado.salas[sala];
+  // Sala V: sistema progresivo iterativo de letras (ilimitado)
+  if(sala===5){
+    const resultado=aplicarPistaLetrasV();
+    if(!resultado.aplicada){
+      mostrarFeedback(5,'Todos los huecos están ya completos o muy avanzados. Comprueba cuidando las tildes.','pista');
+      return;
+    }
+    s.pistas++;
+    mostrarFeedback(5,'Pista '+s.pistas+'. Se ha revelado una letra más en cada hueco aún sin resolver. Cuidado con las tildes y los acentos al completarlo.','pista');
+    actualizarBotonPista(sala);
+    return;
+  }
+  // Resto de salas: pistas textuales
+  if(s.pistas>=2)return;
+  const texto=PISTAS[sala][s.pistas];
+  s.pistas++;
+  const romanos=['','I','II'];
+  mostrarFeedback(sala,'Pista '+romanos[s.pistas]+'. '+texto,'pista');
+  actualizarBotonPista(sala);
+}
+
+// Aplica una pista en Sala V: en cada input vacío o erróneo, revela una letra más
+// dentro del CAMPO (value), respetando las posiciones ya reveladas.
+// Devuelve {aplicada: true} si reveló alguna letra nueva.
+function aplicarPistaLetrasV(){
+  const inputs=document.querySelectorAll('.pergamino-input');
+  let aplicada=false;
+  inputs.forEach(input=>{
+    const respuesta=input.dataset.respuesta; // forma oficial (con tildes)
+    const aceptadas=(input.dataset.aceptadas||respuesta).split(',').map(s=>s.trim());
+    const aceptadasNorm=aceptadas.map(s=>normalizar(s));
+    const valorActual=normalizar((input.value||'').trim());
+    // No tocar inputs cuya respuesta sea correcta (en cualquier variante aceptada)
+    if(aceptadasNorm.indexOf(valorActual)!==-1)return;
+
+    const respNorm=normalizar(respuesta);
+    const len=respNorm.length;
+
+    // Detectar posiciones donde TODAS las variantes coinciden (letras "comunes")
+    const posicionesComunes=new Set();
+    for(let i=0;i<len;i++){
+      const letraRef=respNorm[i];
+      let comun=true;
+      for(const v of aceptadasNorm){
+        if(v.length!==len || v[i]!==letraRef){comun=false;break}
+      }
+      if(comun)posicionesComunes.add(i);
+    }
+
+    // Reconstruir el patrón actual revelado
+    let reveladas=new Set();
+    if(input.dataset.patron){
+      const patron=input.dataset.patron;
+      for(let i=0;i<patron.length;i++){
+        if(patron[i]!=='_')reveladas.add(i);
+      }
+    }
+
+    // Estrategia de revelación en DOS FASES:
+    // Fase 1: revelar las posiciones COMUNES en orden (1ª, última, 2ª, penúltima…)
+    // Fase 2: si ya están todas las comunes, revelar las no-comunes (también en el mismo orden)
+    const ordenComunes=[];
+    const ordenNoComunes=[];
+    for(let i=0;i<Math.ceil(len/2);i++){
+      if(posicionesComunes.has(i))ordenComunes.push(i);
+      else ordenNoComunes.push(i);
+      if(len-1-i!==i){
+        if(posicionesComunes.has(len-1-i))ordenComunes.push(len-1-i);
+        else ordenNoComunes.push(len-1-i);
+      }
+    }
+    const ordenTotal=[...ordenComunes,...ordenNoComunes];
+
+    let nuevaPos=-1;
+    for(const pos of ordenTotal){
+      if(!reveladas.has(pos)){
+        nuevaPos=pos;
+        break;
+      }
+    }
+    if(nuevaPos===-1)return; // todas reveladas
+    reveladas.add(nuevaPos);
+    aplicada=true;
+    let patron='';
+    for(let i=0;i<len;i++){
+      if(reveladas.has(i)){
+        patron+=respuesta[i];
+      }else{
+        patron+='_';
+      }
+    }
+    input.dataset.patron=patron;
+    input.value=patron;
+    input.classList.add('input-con-pista');
+    input.classList.remove('error-input');
+  });
+  return {aplicada:aplicada};
+}
+
+function empezarJuego(){
+  const nom=document.getElementById('input-nombre').value.trim();
+  const ape=document.getElementById('input-apellidos').value.trim();
+  if(nom.length<2 || ape.length<2){
+    document.getElementById('aviso-inicio').textContent='Introduce tu nombre y apellidos completos.';
+    return;
+  }
+  estado.nombre=nom;
+  estado.apellidos=ape;
+  estado.tiempoInicio=Date.now();
+  estado.salaActual=1;
+  iniciarCronometro();
+  actualizarCabecera();
+  inicializarSala1();
+  mostrarPantalla('sala-1');
+}
+
+function iniciarCronometro(){
+  actualizarCronometro();
+  estado.intervaloCron=setInterval(actualizarCronometro,1000);
+}
+
+function actualizarCronometro(){
+  const transcurrido=Math.floor((Date.now()-estado.tiempoInicio)/1000);
+  const restante=Math.max(0,estado.limiteSegundos-transcurrido);
+  const min=Math.floor(restante/60);
+  const seg=restante%60;
+  const cron=document.getElementById('cronometro');
+  cron.textContent=String(min).padStart(2,'0')+':'+String(seg).padStart(2,'0');
+  if(restante<=300)cron.classList.add('alerta');
+  if(restante<=0){
+    clearInterval(estado.intervaloCron);
+    finalizarJuego(true);
+  }
+}
+
+function formatearTiempo(seg){
+  const m=Math.floor(seg/60);
+  const s=seg%60;
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+// SALA I
+let sala1Estado=[];
+
+function inicializarSala1(){
+  const container=document.getElementById('ruletas-container');
+  container.innerHTML='';
+  const romanos=['I','II','III','IV'];
+  let inicial=barajar([0,1,2,3]);
+  if(inicial.every((v,i)=>v===i)){[inicial[0],inicial[1]]=[inicial[1],inicial[0]]}
+  sala1Estado=[...inicial];
+
+  for(let i=0;i<4;i++){
+    const ruleta=document.createElement('div');
+    ruleta.className='ruleta';
+    ruleta.innerHTML=
+      '<div class="ruleta-cabecera">Posición<span class="ruleta-num">'+romanos[i]+'</span></div>'+
+      '<div class="ruleta-divisor"></div>'+
+      '<div class="ruleta-icono">'+ICONOS_POSICION[i]+'</div>'+
+      '<div class="ruleta-display" id="ruleta-display-'+i+'">'+EONES_ORDEN[sala1Estado[i]]+'</div>'+
+      '<div class="ruleta-botones">'+
+        '<button onclick="girarRuleta('+i+',-1)">anterior</button>'+
+        '<button onclick="girarRuleta('+i+',1)">siguiente</button>'+
+      '</div>';
+    container.appendChild(ruleta);
+  }
+}
+
+function girarRuleta(idx,dir){
+  sala1Estado[idx]=(sala1Estado[idx]+dir+EONES_ORDEN.length)%EONES_ORDEN.length;
+  const d=document.getElementById('ruleta-display-'+idx);
+  d.textContent=EONES_ORDEN[sala1Estado[idx]];
+  d.classList.remove('error','correcto');
+}
+
+function comprobarSala1(){
+  let correctas=0;
+  let erroneos=[];
+  for(let i=0;i<4;i++){
+    const display=document.getElementById('ruleta-display-'+i);
+    display.classList.remove('error','correcto');
+    if(sala1Estado[i]===i){
+      correctas++;
+      display.classList.add('correcto');
+    }else{
+      erroneos.push(i);
+    }
+  }
+  if(correctas===4){
+    estado.salas[1].completada=true;
+    mostrarFeedback(1,'Cerrojo abierto. Los cuatro eones están en orden correcto.','ok');
+    setTimeout(()=>pasarASala(2),1500);
+  }else{
+    estado.salas[1].fallos++;
+    erroneos.forEach(i=>{
+      document.getElementById('ruleta-display-'+i).classList.add('error');
+    });
+    mostrarFeedback(1,'Aún no. '+correctas+' de 4 correctas. Revisa las marcadas. Fallos acumulados: '+estado.salas[1].fallos+'.','error');
+    actualizarBotonPista(1);
+  }
+}
+
+// SALA II
+let sala2Seleccion=null;
+let sala2Conexiones=[];
+
+// Iconos SVG abstractos para las eras (decorativos, sin contenido científico)
+const ICONOS_ERA = {
+  'Paleozoica': '<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14"/><circle cx="18" cy="18" r="9"/><circle cx="18" cy="18" r="4"/><line x1="18" y1="2" x2="18" y2="34"/><line x1="2" y1="18" x2="34" y2="18"/></svg>',
+  'Mesozoica': '<svg viewBox="0 0 36 36"><polygon points="18,3 33,18 18,33 3,18"/><polygon points="18,9 27,18 18,27 9,18"/><circle cx="18" cy="18" r="3"/></svg>',
+  'Cenozoica': '<svg viewBox="0 0 36 36"><path d="M18 4 L24 14 L34 16 L26 24 L28 34 L18 28 L8 34 L10 24 L2 16 L12 14 Z"/></svg>'
+};
+
+function inicializarSala2(){
+  const cont=document.getElementById('columna-eras-conexion');
+  cont.innerHTML='<h4>· Era ·</h4>';
+  const erasBarajadas=barajar([...ERAS_ORDEN]);
+  erasBarajadas.forEach(era=>{
+    const n=document.createElement('div');
+    n.className='nodo-conexion derecha';
+    n.dataset.era=era;
+    n.innerHTML='<span class="nodo-icono">'+ICONOS_ERA[era]+'</span><span>'+era+'</span>';
+    n.onclick=()=>seleccionarEra(era,n);
+    cont.appendChild(n);
+  });
+  document.querySelectorAll('#panel-conexiones .izquierda').forEach(n=>{
+    n.onclick=()=>seleccionarPosicion(parseInt(n.dataset.posicion),n);
+  });
+  sala2Seleccion=null;
+  sala2Conexiones=[];
+  redibujarLineasSala2();
+}
+
+function seleccionarPosicion(pos,el){
+  sala2Conexiones=sala2Conexiones.filter(c=>c.posicion!==pos);
+  document.querySelectorAll('#panel-conexiones .nodo-conexion').forEach(n=>n.classList.remove('seleccionado'));
+  el.classList.add('seleccionado');
+  sala2Seleccion={tipo:'posicion',posicion:pos};
+  actualizarEstadoVisualConexiones();
+}
+
+function seleccionarEra(era,el){
+  if(!sala2Seleccion || sala2Seleccion.tipo!=='posicion'){
+    document.querySelectorAll('#panel-conexiones .nodo-conexion').forEach(n=>n.classList.remove('seleccionado'));
+    el.classList.add('seleccionado');
+    sala2Seleccion={tipo:'era',era:era};
+    actualizarEstadoVisualConexiones();
+    return;
+  }
+  sala2Conexiones=sala2Conexiones.filter(c=>c.era!==era && c.posicion!==sala2Seleccion.posicion);
+  sala2Conexiones.push({posicion:sala2Seleccion.posicion,era:era});
+  sala2Seleccion=null;
+  document.querySelectorAll('#panel-conexiones .nodo-conexion').forEach(n=>n.classList.remove('seleccionado'));
+  actualizarEstadoVisualConexiones();
+  redibujarLineasSala2();
+}
+
+function actualizarEstadoVisualConexiones(){
+  document.querySelectorAll('#panel-conexiones .nodo-conexion').forEach(n=>{
+    n.classList.remove('conectado','error-conexion');
+  });
+  sala2Conexiones.forEach(c=>{
+    const izq=document.querySelector('#panel-conexiones .izquierda[data-posicion="'+c.posicion+'"]');
+    const der=document.querySelector('#panel-conexiones .derecha[data-era="'+c.era+'"]');
+    if(izq)izq.classList.add('conectado');
+    if(der)der.classList.add('conectado');
+  });
+}
+
+function redibujarLineasSala2(){
+  const svg=document.getElementById('svg-lineas');
+  const panel=document.getElementById('panel-conexiones');
+  if(!panel||!svg)return;
+  const rect=panel.getBoundingClientRect();
+  svg.setAttribute('width',rect.width);
+  svg.setAttribute('height',rect.height);
+  svg.innerHTML='';
+  sala2Conexiones.forEach(c=>{
+    const nIzq=document.querySelector('#panel-conexiones .izquierda[data-posicion="'+c.posicion+'"]');
+    const nDer=document.querySelector('#panel-conexiones .derecha[data-era="'+c.era+'"]');
+    if(!nIzq||!nDer)return;
+    const rIzq=nIzq.getBoundingClientRect();
+    const rDer=nDer.getBoundingClientRect();
+    const x1=rIzq.right-rect.left;
+    const y1=rIzq.top+rIzq.height/2-rect.top;
+    const x2=rDer.left-rect.left;
+    const y2=rDer.top+rDer.height/2-rect.top;
+    const linea=document.createElementNS('http://www.w3.org/2000/svg','path');
+    linea.setAttribute('d','M '+x1+' '+y1+' C '+(x1+60)+' '+y1+', '+(x2-60)+' '+y2+', '+x2+' '+y2);
+    linea.setAttribute('class','linea-conexion'+(c.esError?' error':''));
+    svg.appendChild(linea);
+  });
+}
+
+function borrarConexiones(){
+  sala2Conexiones=[];
+  sala2Seleccion=null;
+  actualizarEstadoVisualConexiones();
+  redibujarLineasSala2();
+  mostrarFeedback(2,'','');
+}
+
+function comprobarSala2(){
+  if(sala2Conexiones.length<3){
+    mostrarFeedback(2,'Debes trazar las tres conexiones antes de comprobar.','error');
+    return;
+  }
+  const correcto={1:'Paleozoica',2:'Mesozoica',3:'Cenozoica'};
+  let correctas=0;
+  sala2Conexiones.forEach(c=>{
+    c.esError=(correcto[c.posicion]!==c.era);
+    if(!c.esError)correctas++;
+  });
+  redibujarLineasSala2();
+
+  if(correctas===3){
+    estado.salas[2].completada=true;
+    mostrarFeedback(2,'Conexiones correctas. Las tres eras están bien emparejadas.','ok');
+    setTimeout(()=>pasarASala(3),1500);
+  }else{
+    estado.salas[2].fallos++;
+    document.querySelectorAll('#panel-conexiones .nodo-conexion').forEach(n=>n.classList.remove('error-conexion'));
+    sala2Conexiones.filter(c=>c.esError).forEach(c=>{
+      const izq=document.querySelector('#panel-conexiones .izquierda[data-posicion="'+c.posicion+'"]');
+      const der=document.querySelector('#panel-conexiones .derecha[data-era="'+c.era+'"]');
+      if(izq)izq.classList.add('error-conexion');
+      if(der)der.classList.add('error-conexion');
+    });
+    mostrarFeedback(2,correctas+' de 3 correctas. Revisa las marcadas en rojo. Fallos acumulados: '+estado.salas[2].fallos+'.','error');
+    actualizarBotonPista(2);
+  }
+}
+
+// SALA III
+function inicializarSala3(){
+  const banco=document.getElementById('banco-tarjetas');
+  const titulo=banco.querySelector('.banco-tarjetas-titulo');
+  banco.innerHTML='';
+  banco.appendChild(titulo);
+  // Limpiar las zonas de drop
+  document.querySelectorAll('.columna-era-zona').forEach(z=>{z.innerHTML=''});
+  const todos=[];
+  Object.entries(PERIODOS_POR_ERA).forEach(([era,pers])=>{
+    pers.forEach(p=>todos.push({nombre:p,eraCorrecta:era}));
+  });
+  barajar(todos).forEach(p=>{
+    const t=document.createElement('div');
+    t.className='tarjeta-periodo';
+    t.textContent=p.nombre;
+    t.dataset.eraCorrecta=p.eraCorrecta;
+    t.draggable=true;
+    t.id='tarjeta-'+p.nombre.toLowerCase().replace(/[^a-z]/g,'');
+    t.addEventListener('dragstart',e=>{
+      t.classList.add('arrastrando');
+      e.dataTransfer.setData('text/plain',t.id);
+      e.dataTransfer.effectAllowed='move';
+    });
+    t.addEventListener('dragend',()=>t.classList.remove('arrastrando'));
+    t.addEventListener('click',e=>{
+      e.stopPropagation();
+      document.querySelectorAll('.tarjeta-periodo').forEach(x=>{
+        if(x!==t)x.classList.remove('seleccionada-tarjeta');
+      });
+      t.classList.toggle('seleccionada-tarjeta');
+    });
+    banco.appendChild(t);
+  });
+
+  // Zonas válidas: banco + cada columna-era-zona
+  const zonas=[banco, ...document.querySelectorAll('.columna-era-zona')];
+  zonas.forEach(zona=>{
+    zona.addEventListener('dragover',e=>{
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      const col=zona.closest('.columna-era');
+      if(col)col.classList.add('arrastre-sobre');
+    });
+    zona.addEventListener('dragleave',()=>{
+      const col=zona.closest('.columna-era');
+      if(col)col.classList.remove('arrastre-sobre');
+    });
+    zona.addEventListener('drop',e=>{
+      e.preventDefault();
+      const col=zona.closest('.columna-era');
+      if(col)col.classList.remove('arrastre-sobre');
+      const id=e.dataTransfer.getData('text/plain');
+      const tar=document.getElementById(id);
+      if(tar)zona.appendChild(tar);
+    });
+    zona.addEventListener('click',e=>{
+      const sel=document.querySelector('.tarjeta-periodo.seleccionada-tarjeta');
+      if(sel && (e.target===zona||e.target.classList.contains('banco-tarjetas-titulo')||e.target.tagName==='H3')){
+        zona.appendChild(sel);
+        sel.classList.remove('seleccionada-tarjeta');
+      }
+    });
+  });
+  // También el contenedor de columna acepta clicks (si pinchan título)
+  document.querySelectorAll('.columna-era').forEach(col=>{
+    col.addEventListener('click',e=>{
+      const sel=document.querySelector('.tarjeta-periodo.seleccionada-tarjeta');
+      if(sel && e.target.tagName==='H3'){
+        const zona=col.querySelector('.columna-era-zona');
+        if(zona){zona.appendChild(sel);sel.classList.remove('seleccionada-tarjeta')}
+      }
+    });
+  });
+}
+
+function comprobarSala3(){
+  const banco=document.getElementById('banco-tarjetas');
+  const tarjetasEnBanco=banco.querySelectorAll('.tarjeta-periodo');
+  if(tarjetasEnBanco.length>0){
+    mostrarFeedback(3,'Debes colocar todas las tarjetas en una era antes de comprobar.','error');
+    return;
+  }
+  let correctas=0;
+  let totalTarjetas=0;
+  document.querySelectorAll('.tarjeta-periodo').forEach(t=>t.classList.remove('error-tarjeta','correcta-tarjeta'));
+  document.querySelectorAll('.columna-era-zona').forEach(zona=>{
+    const eraCol=zona.dataset.zona;
+    zona.querySelectorAll('.tarjeta-periodo').forEach(t=>{
+      totalTarjetas++;
+      if(t.dataset.eraCorrecta===eraCol){
+        correctas++;
+        t.classList.add('correcta-tarjeta');
+      }else{
+        t.classList.add('error-tarjeta');
+      }
+    });
+  });
+  if(correctas===totalTarjetas){
+    estado.salas[3].completada=true;
+    mostrarFeedback(3,'Los doce períodos están en su era correcta.','ok');
+    setTimeout(()=>pasarASala(4),1500);
+  }else{
+    estado.salas[3].fallos++;
+    mostrarFeedback(3,correctas+' de '+totalTarjetas+' correctas. Corrige las marcadas en rojo. Fallos acumulados: '+estado.salas[3].fallos+'.','error');
+    actualizarBotonPista(3);
+  }
+}
+
+// SALA IV
+const NUM_PREGUNTAS_QUIZ=10;
+
+function inicializarSala4(){
+  const porNivel={'eón':[],'era':[],'período':[],'época':[]};
+  TERMINOS_CLASIFICACION.forEach(t=>porNivel[t.nivel].push(t));
+  const seleccion=[
+    ...barajar(porNivel['eón']).slice(0,3),
+    ...barajar(porNivel['era']).slice(0,3),
+    ...barajar(porNivel['período']).slice(0,3),
+    ...barajar(porNivel['época']).slice(0,1)
+  ];
+  estado.salas[4].preguntas=barajar(seleccion);
+  estado.salas[4].preguntaActual=0;
+
+  document.getElementById('quiz-total-preguntas').textContent=NUM_PREGUNTAS_QUIZ;
+
+  document.querySelectorAll('.quiz-boton').forEach(b=>{
+    b.onclick=()=>responderQuiz(b.dataset.nivel,b);
+    b.disabled=false;
+  });
+  mostrarPreguntaQuiz();
+}
+
+function mostrarPreguntaQuiz(){
+  const s=estado.salas[4];
+  const i=s.preguntaActual;
+  if(i>=NUM_PREGUNTAS_QUIZ){
+    s.completada=true;
+    mostrarFeedback(4,'Clasificación completada.','ok');
+    setTimeout(()=>pasarASala(5),1500);
+    return;
+  }
+  document.getElementById('quiz-progreso').textContent='Pregunta '+(i+1)+' de '+NUM_PREGUNTAS_QUIZ;
+  document.getElementById('quiz-panel-pregunta').textContent=s.preguntas[i].termino;
+  mostrarFeedback(4,'','');
+  document.getElementById('quiz-recordatorio').classList.remove('visible');
+  document.querySelectorAll('.quiz-boton').forEach(b=>{
+    b.classList.remove('error-quiz','correcto-quiz');
+    b.disabled=false;
+  });
+}
+
+function responderQuiz(nivelElegido,boton){
+  const s=estado.salas[4];
+  const preg=s.preguntas[s.preguntaActual];
+  if(nivelElegido===preg.nivel){
+    boton.classList.add('correcto-quiz');
+    document.querySelectorAll('.quiz-boton').forEach(b=>b.disabled=true);
+    setTimeout(()=>{
+      s.preguntaActual++;
+      mostrarPreguntaQuiz();
+    },750);
+  }else{
+    boton.classList.add('error-quiz');
+    s.fallos++;
+    mostrarFeedback(4,'No es '+nivelElegido+'. Intenta otro nivel. Fallos acumulados: '+s.fallos+'.','error');
+    boton.disabled=true;
+    if(s.fallos>=2){
+      const rec=document.getElementById('quiz-recordatorio');
+      rec.classList.add('visible');
+      clearTimeout(window._timerRecordatorio);
+      window._timerRecordatorio=setTimeout(()=>{
+        rec.classList.remove('visible');
+      },4000);
+    }
+    actualizarBotonPista(4);
+  }
+}
+
+// SALA V
+function inicializarSala5(){
+  document.querySelectorAll('.pergamino-input').forEach(i=>{
+    i.value='';
+    i.classList.remove('error-input','correcto-input','input-con-pista','sin-tilde-input');
+    delete i.dataset.patron;
+    if(i.dataset.placeholderOriginal){
+      i.placeholder=i.dataset.placeholderOriginal;
+    }else{
+      i.dataset.placeholderOriginal=i.placeholder;
+    }
+  });
+}
+
+function comprobarSala5(){
+  const inputs=document.querySelectorAll('.pergamino-input');
+  let correctasExactas=0;        // palabra escrita IDÉNTICA (con tildes y mayúsc.)
+  let correctasConErrores=0;     // palabra correcta pero con tildes/mayúsculas mal
+  let huecos=[];
+  let vacios=0;
+
+  inputs.forEach(i=>{
+    i.classList.remove('error-input','correcto-input','sin-tilde-input');
+    const valorRaw=(i.value||'').trim();
+    const valorNorm=normalizar(valorRaw);
+    const respPrincipal=i.dataset.respuesta;
+    // Lista de respuestas aceptadas (variantes de género y formas alternativas)
+    const aceptadas=(i.dataset.aceptadas||respPrincipal).split(',').map(s=>s.trim());
+    const aceptadasNorm=aceptadas.map(s=>normalizar(s));
+    const soloGuiones=valorRaw.includes('_');
+
+    if(!valorRaw || soloGuiones){
+      vacios++;
+      i.classList.add('error-input');
+      huecos.push({input:i,estado:'vacio',resp:respPrincipal});
+      return;
+    }
+    // ¿Coincide con alguna variante aceptada (sin tildes, sin mayúsculas)?
+    const idxMatch=aceptadasNorm.indexOf(valorNorm);
+    if(idxMatch===-1){
+      // No es ninguna variante aceptada → respuesta incorrecta
+      i.classList.add('error-input');
+      huecos.push({input:i,estado:'incorrecto',resp:respPrincipal});
+      return;
+    }
+    // La palabra es correcta. ¿Está escrita exactamente con tildes y mayúsculas?
+    const variantePerfecta=aceptadas[idxMatch]; // forma exacta esperada
+    if(valorRaw===variantePerfecta){
+      correctasExactas++;
+      i.classList.add('correcto-input');
+      i.classList.remove('input-con-pista');
+      delete i.dataset.patron;
+      huecos.push({input:i,estado:'perfecto',resp:respPrincipal});
+    }else{
+      // Palabra correcta pero faltan tildes O mayúsculas
+      correctasConErrores++;
+      i.classList.add('sin-tilde-input');
+      // Detectar qué tipo de errores tiene
+      const errores=[];
+      // Comparar tildes: si la versión sin tildes coincide pero la versión con tildes no
+      const valorSinTilde=valorRaw.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const respSinTilde=variantePerfecta.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const tieneFalloTilde=(valorSinTilde.toLowerCase()===respSinTilde.toLowerCase()) && (valorRaw.toLowerCase()!==variantePerfecta.toLowerCase());
+      // Comparar mayúscula inicial
+      const tieneFalloMayus=(valorRaw.charAt(0)!==variantePerfecta.charAt(0));
+      if(tieneFalloTilde)errores.push('tilde');
+      if(tieneFalloMayus)errores.push('mayúscula inicial');
+      huecos.push({input:i,estado:'sin-perfeccionar',resp:respPrincipal,formaCorrecta:variantePerfecta,errores:errores});
+    }
+  });
+
+  // CASO 1: huecos vacíos → ERROR (penaliza)
+  if(vacios>0){
+    mostrarFeedback(5,'Debes rellenar todos los huecos ('+vacios+' por completar). Cuidado con las tildes y las mayúsculas.','error');
+    estado.salas[5].fallos++;
+    actualizarBotonPista(5);
+    return;
+  }
+  // CASO 2: hay palabras incorrectas → ERROR (penaliza)
+  const incorrectos=huecos.filter(h=>h.estado==='incorrecto').length;
+  if(incorrectos>0){
+    estado.salas[5].fallos++;
+    const total=inputs.length;
+    mostrarFeedback(5,(correctasExactas+correctasConErrores)+' de '+total+' correctas. Corrige las marcadas en rojo. Cuidado con las tildes y las mayúsculas. Fallos acumulados: '+estado.salas[5].fallos+'.','error');
+    actualizarBotonPista(5);
+    return;
+  }
+  // CASO 3: todas las palabras son correctas pero con errores ortográficos → AVISO (no penaliza)
+  if(correctasConErrores>0){
+    const lista=huecos.filter(h=>h.estado==='sin-perfeccionar')
+      .map(h=>{
+        const errs=h.errores.length>0 ? ' ('+h.errores.join(' y ')+')' : '';
+        return h.formaCorrecta+errs;
+      })
+      .join('; ');
+    const num=correctasConErrores;
+    mostrarFeedback(5,
+      'Casi perfecto. Hay '+num+' palabra'+(num>1?'s':'')+' con errores ortográficos (marcada'+(num>1?'s':'')+' en dorado). '+
+      'Escríbela'+(num>1?'s':'')+' correctamente: '+lista+'. '+
+      'Después pulsa Comprobar de nuevo para finalizar.','sin-tilde-aviso');
+    return; // NO penaliza
+  }
+  // CASO 4: todas perfectas → FINALIZAR
+  estado.salas[5].completada=true;
+  mostrarFeedback(5,'Pergamino completado correctamente. Excelente ortografía.','ok');
+  setTimeout(()=>finalizarJuego(false),1500);
+}
+
+function pasarASala(n){
+  estado.salaActual=n;
+  actualizarCabecera();
+  if(n===2){inicializarSala2();mostrarPantalla('sala-2');setTimeout(redibujarLineasSala2,100)}
+  else if(n===3){inicializarSala3();mostrarPantalla('sala-3')}
+  else if(n===4){inicializarSala4();mostrarPantalla('sala-4')}
+  else if(n===5){inicializarSala5();mostrarPantalla('sala-5')}
+}
+
+function finalizarJuego(tiempoAgotado){
+  clearInterval(estado.intervaloCron);
+  estado.tiempoFin=Date.now();
+  const tiempoTotalSeg=Math.min(estado.limiteSegundos,Math.floor((estado.tiempoFin-estado.tiempoInicio)/1000));
+
+  let nota=10;
+  let totalFallos=0, totalPistas=0;
+  for(let i=1;i<=5;i++){
+    const s=estado.salas[i];
+    nota-=s.fallos*0.3;
+    nota-=s.pistas*0.3;
+    totalFallos+=s.fallos;
+    totalPistas+=s.pistas;
+  }
+  let incompletas=0;
+  for(let i=1;i<=5;i++){
+    if(!estado.salas[i].completada)incompletas++;
+  }
+  if(tiempoAgotado && incompletas>0){
+    nota-=incompletas*1.0;
+  }
+  let bonus=0;
+  if(incompletas===0){
+    if(tiempoTotalSeg<15*60)bonus=1;
+    else if(tiempoTotalSeg<20*60)bonus=0.5;
+    else if(tiempoTotalSeg<25*60)bonus=0.25;
+  }
+  nota+=bonus;
+  nota=Math.max(0,Math.min(10,nota));
+
+  document.getElementById('final-nombre').textContent=estado.nombre+' '+estado.apellidos;
+  document.getElementById('final-nota').textContent=nota.toFixed(2).replace('.',',');
+  document.getElementById('final-tiempo').textContent='Tiempo empleado: '+formatearTiempo(tiempoTotalSeg)+(tiempoAgotado?' (agotado)':'');
+
+  // Calcular impacto sobre nota media
+  const impactoCaja=document.getElementById('impacto-nota');
+  const impactoTexto=document.getElementById('texto-impacto');
+  impactoCaja.classList.remove('positivo','neutro','negativo');
+  if(nota>7){
+    impactoCaja.classList.add('positivo');
+    impactoTexto.textContent='+0,5 puntos en tu nota media de exámenes';
+  }else if(nota<5){
+    impactoCaja.classList.add('negativo');
+    impactoTexto.textContent='−0,5 puntos en tu nota media de exámenes';
+  }else{
+    impactoCaja.classList.add('neutro');
+    impactoTexto.textContent='Sin variación en la nota media';
+  }
+
+  const tbody=document.getElementById('tabla-desglose-body');
+  tbody.innerHTML='';
+  const nombresSalas=['Sala I — Cerrojo','Sala II — Conexiones','Sala III — Períodos','Sala IV — Clasificación','Sala V — Pergamino'];
+  for(let i=1;i<=5;i++){
+    const s=estado.salas[i];
+    const penal=(s.fallos*0.3+s.pistas*0.3).toFixed(2).replace('.',',');
+    const estadoSala=s.completada?'':' (incompleta)';
+    tbody.innerHTML+='<tr><td>'+nombresSalas[i-1]+estadoSala+'</td><td>'+s.fallos+'</td><td>'+s.pistas+'</td><td>−'+penal+'</td></tr>';
+  }
+  const totalPenal=(totalFallos*0.3+totalPistas*0.3).toFixed(2).replace('.',',');
+  let resumen='−'+totalPenal;
+  if(bonus>0)resumen+=' · Bonus +'+bonus.toString().replace('.',',');
+  tbody.innerHTML+='<tr><td>Total</td><td>'+totalFallos+'</td><td>'+totalPistas+'</td><td>'+resumen+'</td></tr>';
+
+  estado.salaActual=0;
+  document.getElementById('cabecera-juego').classList.remove('visible');
+  mostrarPantalla('pantalla-final');
+}
+
+window.addEventListener('resize',()=>{
+  if(estado.salaActual===2)redibujarLineasSala2();
+});
+
+document.getElementById('marca-agua-logo')?.classList.add('visible');
+</script>
+</body>
+</html>
